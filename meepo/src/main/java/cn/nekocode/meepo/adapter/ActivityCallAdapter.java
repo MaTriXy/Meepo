@@ -20,8 +20,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-import cn.nekocode.meepo.GotoMethod;
+import cn.nekocode.meepo.CallMethod;
 import cn.nekocode.meepo.config.Config;
 import cn.nekocode.meepo.MeepoUtils;
 import cn.nekocode.meepo.config.UriConfig;
@@ -29,12 +31,15 @@ import cn.nekocode.meepo.config.UriConfig;
 /**
  * @author nekocode (nekocode.cn@gmail.com)
  */
-public class GotoActivityAdapter implements GotoAdapter<Boolean> {
+public class ActivityCallAdapter implements CallAdapter<Boolean> {
 
+    @Nullable
     @Override
-    public Boolean goTo(Config config, GotoMethod method, Object[] args) {
+    public Boolean call(@NonNull Config config, @NonNull CallMethod method, @NonNull Object[] args) {
         final Context context = MeepoUtils.getContextFromFirstParameter(args);
-        final Class targetClass = method.getTargetClass();
+        if (context == null) {
+            return false;
+        }
 
         String uri = null;
         if (config instanceof UriConfig) {
@@ -42,9 +47,14 @@ public class GotoActivityAdapter implements GotoAdapter<Boolean> {
             uri = method.getUri(uriConfig.getScheme(), uriConfig.getHost(), args);
         }
 
+        final Class targetClass = method.getTargetClass();
         final Intent intent = new Intent();
         if (targetClass != null) {
-            intent.setClass(context, method.getTargetClass());
+            intent.setClass(context, targetClass);
+        }
+        final String targetClassName = method.getTargetClassName();
+        if (targetClassName != null) {
+            intent.setClassName(context, targetClassName);
         }
         if (uri != null) {
             intent.setDataAndType(Uri.parse(uri), method.getMimeType());

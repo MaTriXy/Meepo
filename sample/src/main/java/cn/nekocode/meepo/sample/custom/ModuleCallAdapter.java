@@ -1,19 +1,22 @@
 package cn.nekocode.meepo.sample.custom;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-import cn.nekocode.meepo.GotoMethod;
+import cn.nekocode.meepo.CallMethod;
 import cn.nekocode.meepo.MeepoUtils;
-import cn.nekocode.meepo.adapter.GotoAdapter;
+import cn.nekocode.meepo.adapter.CallAdapter;
 import cn.nekocode.meepo.config.Config;
 
 /**
  * @author nekocode (nekocode.cn@gmail.com)
  */
-public class GotoModuleAdapter implements GotoAdapter {
+public class ModuleCallAdapter implements CallAdapter {
 
+    @Nullable
     @Override
-    public Object goTo(Config config, GotoMethod method, Object[] args) {
+    public Object call(@NonNull Config config, @NonNull CallMethod method, @NonNull Object[] args) {
         final Context context = MeepoUtils.getContextFromFirstParameter(args);
         final Class targetClass = method.getTargetClass();
 

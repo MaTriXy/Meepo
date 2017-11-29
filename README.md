@@ -72,6 +72,7 @@ Meepo supports below router annotations currently:
 | Annotation | Description |
 | :----- | :------ |
 | `@TargetClass` | Declare the target Class (Such as target Activity or Fragment) |
+| `@TargetClassName` | Declare the target Class name |
 | `@TargetPath` | Declare the path of URI path (and MimeType) |
 | `@TargetAction` | Declare the Intent action |
 | `@TargetFlags` | Declare the Intent flags |
@@ -82,15 +83,15 @@ Meepo supports below router annotations currently:
 | `@RequestCode` | Request code for `startActivityForResult()` |
 
 
-## Custom Parser and GotoAdapter
+## Custom Parser and CallAdapter
 
-You can create custom Parser and GotoAdapter for Meepo. See the **[sample](sample/src/main/java/cn/nekocode/meepo/sample/custom)** for more details. It means that you have the ability to make router for anything.
+You can create custom Parser and CallAdapter for Meepo. See the **[sample](sample/src/main/java/cn/nekocode/meepo/sample/custom)** for more details. It means that you have the ability to make router for anything.
 
 ```java
 final ModuleRouter moduleRouter = new Meepo.Builder()
         .config(new ModuleConfig("TEST"))
         .parser(new ModuleParser())
-        .adapter(new GotoModuleAdapter())
+        .adapter(new ModuleCallAdapter())
         .build()
         .create(ModuleRouter.class);
 ```

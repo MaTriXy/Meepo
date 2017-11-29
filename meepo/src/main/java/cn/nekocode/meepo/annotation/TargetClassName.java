@@ -14,33 +14,21 @@
  * limitations under the License.
  */
 
-package cn.nekocode.meepo.config;
+package cn.nekocode.meepo.annotation;
 
-import android.support.annotation.Nullable;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * @author nekocode (nekocode.cn@gmail.com)
  */
-public class UriConfig implements Config {
-    private String scheme;
-    private String host;
-
-
-    public UriConfig scheme(@Nullable String scheme) {
-        this.scheme = scheme;
-        return this;
-    }
-
-    public UriConfig host(@Nullable String host) {
-        this.host = host;
-        return this;
-    }
-
-    public String getScheme() {
-        return scheme;
-    }
-
-    public String getHost() {
-        return host;
-    }
+@Documented
+@Target(METHOD)
+@Retention(RUNTIME)
+public @interface TargetClassName {
+    String value();
 }

@@ -16,14 +16,17 @@
 
 package cn.nekocode.meepo.parser;
 
+import android.support.annotation.NonNull;
+
 import java.lang.reflect.Method;
 
-import cn.nekocode.meepo.GotoMethod;
+import cn.nekocode.meepo.CallMethod;
 import cn.nekocode.meepo.config.Config;
 
 /**
  * @author nekocode (nekocode.cn@gmail.com)
  */
 public interface Parser {
-    GotoMethod parseMethod(Config config, Method method);
+    @NonNull
+    CallMethod parseMethod(@NonNull Config config, @NonNull Method method);
 }
