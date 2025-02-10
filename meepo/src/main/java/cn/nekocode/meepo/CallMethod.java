@@ -29,13 +29,14 @@ import java.util.Map;
  * @author nekocode (nekocode.cn@gmail.com)
  */
 public class CallMethod {
+    private Class clazz;
+    private String clazzName;
+    private String action;
+    private Integer flags;
+    private Integer requestCode;
     private String mimeType;
-    private Class targetClass;
-    private String targetClassName;
-    private int targetFlags;
-    private String targetAction;
 
-    private ArrayList<Object> pathSegements = new ArrayList<>(); // [segementString, position, ...]
+    private ArrayList<Object> pathSegments = new ArrayList<>(); // [segmentString, position, ...]
     private HashMap<String, Integer> queryPositions = new HashMap<>(); // {key: position, ...}
     private ArrayList<Integer> queryMapPositions = new ArrayList<>(); // [position, position, ...]
     private HashMap<String, Integer> bundlePositions = new HashMap<>();
@@ -43,28 +44,64 @@ public class CallMethod {
 
 
     @Nullable
-    public String getTargetAction() {
-        return targetAction;
+    public Class getClazz() {
+        return clazz;
+    }
+
+    public void setClazz(@Nullable Class clazz) {
+        this.clazz = clazz;
     }
 
     @Nullable
-    public Class getTargetClass() {
-        return targetClass;
+    public String getClazzName() {
+        return clazzName;
+    }
+
+    public void setClazzName(@Nullable String clazzName) {
+        this.clazzName = clazzName;
     }
 
     @Nullable
-    public String getTargetClassName() {
-        return targetClassName;
+    public String getAction() {
+        return action;
     }
 
-    public int getTargetFlags() {
-        return targetFlags;
+    public void setAction(@Nullable String action) {
+        this.action = action;
+    }
+
+    @Nullable
+    public Integer getFlags() {
+        return flags;
+    }
+
+    public void setFlags(int flags) {
+        this.flags = flags;
+    }
+
+    public void setRequestCode(int requestCode) {
+        this.requestCode = requestCode;
+    }
+
+    public void setRequestCodePosition(@Nullable Integer requestCodePosition) {
+        this.requestCodePosition = requestCodePosition;
+    }
+
+    @Nullable
+    public Integer getRequestCode(@NonNull Object[] args) {
+        return requestCodePosition == null ? requestCode : (Integer) args[requestCodePosition];
     }
 
     @Nullable
     public String getMimeType() {
         return mimeType;
     }
+
+    public void setMimeType(@Nullable String mimeType) {
+        this.mimeType = mimeType;
+    }
+
+
 
     @Nullable
     public String getUri(@Nullable String scheme, @Nullable String host, @NonNull Object[] args) {
@@ -80,30 +117,8 @@ public class CallMethod {
         return hostUri + path + queryString;
     }
 
-
-
-    public void setTargetAction(@Nullable String targetAction) {
-        this.targetAction = targetAction;
-    }
-
-    public void setTargetClass(@Nullable Class targetClass) {
-        this.targetClass = targetClass;
-    }
-
-    public void setTargetClassName(@Nullable String targetClassName) {
-        this.targetClassName = targetClassName;
-    }
-
-    public void setTargetFlags(int targetFlags) {
-        this.targetFlags = targetFlags;
-    }
-
-    public void setMimeType(@Nullable String mimeType) {
-        this.mimeType = mimeType;
-    }
-
-    public void addPathSegement(@NonNull Object pathSegements) {
-        this.pathSegements.add(pathSegements);
+    public void addPathSegment(@NonNull Object pathSegment) {
+        this.pathSegments.add(pathSegment);
     }
 
     public void addQueryPositions(@NonNull String key, @NonNull Integer queryPosition) {
@@ -122,7 +137,7 @@ public class CallMethod {
     private String getPath(@NonNull Object[] args) {
         final StringBuilder stringBuilder = new StringBuilder();
 
-        for (Object segment : pathSegements) {
+        for (Object segment : pathSegments) {
             if (segment instanceof String) {
                 stringBuilder.append((String) segment);
             } else if (segment instanceof Integer) {
@@ -138,9 +153,13 @@ public class CallMethod {
         final StringBuilder stringBuilder = new StringBuilder("?");
 
         int count = 0;
+        String key, value;
+        Object arg;
         for (Map.Entry<String, Integer> entry : queryPositions.entrySet()) {
-            final String key = entry.getKey();
-            final String value = String.valueOf(args[entry.getValue()]);
+            key = entry.getKey();
+            arg = args[entry.getValue()];
+            if (arg == null) continue;
+            value = arg.toString();
 
             if (count++ == 0) {
                 stringBuilder.append(key).append("=").append(value);
@@ -149,12 +168,18 @@ public class CallMethod {
             }
         }
 
+        Map<String, ?> queryMap;
         for (Integer position : queryMapPositions) {
-            final Map<String, ?> queryMap = (Map<String, ?>) args[position];
+            arg = args[position];
+            if (arg == null) continue;
+            queryMap = (Map<String, ?>) arg;
 
+            Object tmpValue;
             for (Map.Entry<String, ?> entry : queryMap.entrySet()) {
-                final String key = entry.getKey();
-                final String value = String.valueOf(entry.getValue());
+                key = entry.getKey();
+                tmpValue = entry.getValue();
+                if (tmpValue == null) continue;
+                value = tmpValue.toString();
 
                 if (count++ == 0) {
                     stringBuilder.append(key).append("=").append(value);
@@ -171,22 +196,16 @@ public class CallMethod {
     public Bundle getBundle(@NonNull Object[] args) {
         final Bundle bundle = new Bundle();
 
+        String key;
+        Object value;
         for (Map.Entry<String, Integer> entry : bundlePositions.entrySet()) {
-            final String key = entry.getKey();
-            final Object value = args[entry.getValue()];
+            key = entry.getKey();
+            value = args[entry.getValue()];
+            if (value == null) continue;
 
             MeepoUtils.putValueToBundle(bundle, key, value);
         }
 
         return bundle;
-    }
-
-    public void setRequestCodePosition(@Nullable Integer requestCodePosition) {
-        this.requestCodePosition = requestCodePosition;
-    }
-
-    @Nullable
-    public Integer getRequestCode(@NonNull Object[] args) {
-        return requestCodePosition == null ? null : (Integer) args[requestCodePosition];
     }
 }

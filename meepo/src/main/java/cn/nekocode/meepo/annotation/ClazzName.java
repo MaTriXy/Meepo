@@ -29,6 +29,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Documented
 @Target(METHOD)
 @Retention(RUNTIME)
-public @interface TargetClass {
-    java.lang.Class value();
+public @interface ClazzName {
+    String value();
 }

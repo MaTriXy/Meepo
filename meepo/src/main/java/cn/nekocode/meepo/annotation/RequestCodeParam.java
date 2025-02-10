@@ -1,5 +1,5 @@
 /*
- * Copyright 2017. nekocode (nekocode.cn@gmail.com)
+ * Copyright 2018. nekocode (nekocode.cn@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,5 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Documented
 @Target(PARAMETER)
 @Retention(RUNTIME)
-public @interface Bundle {
-    String value();
+public @interface RequestCodeParam {
 }
